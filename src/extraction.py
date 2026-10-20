@@ -1,9 +1,21 @@
 import re
 from src.contrat import Evenement
 
+# def masquer_secrets(texte: str) -> str:
+#     pattern = r'(?i)\b(password|passwd|token|secret|api_key|apikey)([:=])([^\s&,;]+)'
+#     return re.sub(pattern, r'\1\2[SECRET]', texte)
+
 def masquer_secrets(texte: str) -> str:
     pattern = r'(?i)\b(password|passwd|token|secret|api_key|apikey)([:=])([^\s&,;]+)'
-    return re.sub(pattern, r'\1\2[SECRET]', texte)
+    texte = re.sub(pattern, r'\1\2[SECRET]', texte)
+
+    texte = re.sub(
+        r'(\bBearer\s+)\S+',
+        r'\1[SECRET]',
+        texte,
+        flags=re.IGNORECASE
+    )
+    return texte
 
 def normaliser_log(ligne: str, numero: int, source: str = "DOCKER", environment: str = "production") -> Evenement:
     champs = ligne.split(maxsplit=4)
